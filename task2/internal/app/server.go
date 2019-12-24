@@ -3,8 +3,8 @@ package app
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alexandra/task2/internal/conn"
-	"github.com/alexandra/task2/internal/data"
+	"github.com/Starchavaya/Go/task2/internal/conn"
+	"github.com/Starchavaya/Go/task2/internal/data"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -17,7 +17,7 @@ type Server struct {
 
 func (s *Server) GetMothers() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(data.NewMotherData((conn.DbConnection{}.GetConnection())).GetMothersFromDb())
+		json.NewEncoder(w).Encode(data.NewMotherData(conn.DbConnection{}.GetConnection()).GetMothersFromDb())
 	}
 }
 
@@ -29,7 +29,7 @@ func (s *Server) GetChildsByMother() http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		json.NewEncoder(w).Encode(data.NewChildData((conn.DbConnection{}.GetConnection())).GetChildsByMotherIdDb(id))
+		json.NewEncoder(w).Encode(data.NewChildData(conn.DbConnection{}.GetConnection()).GetChildsByMotherIdDb(id))
 		return
 	}
 }
@@ -45,7 +45,7 @@ func (s *Server) GetChildByMotherAndId() http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		json.NewEncoder(w).Encode(data.NewChildData((conn.DbConnection{}.GetConnection())).GetChildByMotherAndIdDb(idMother, idChild))
+		json.NewEncoder(w).Encode(data.NewChildData(conn.DbConnection{}.GetConnection()).GetChildByMotherAndIdDb(idMother, idChild))
 	}
 }
 
@@ -56,7 +56,7 @@ func (s *Server) GetMother() http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		json.NewEncoder(w).Encode(data.NewMotherData((conn.DbConnection{}.GetConnection())).GetMotherFromDb(idMother))
+		json.NewEncoder(w).Encode(data.NewMotherData(conn.DbConnection{}.GetConnection()).GetMotherFromDb(idMother))
 	}
 }
 
@@ -69,7 +69,7 @@ func (s *Server) CreateChild() http.HandlerFunc {
 		}
 		var child data.Child
 		json.NewDecoder(r.Body).Decode(&child)
-		data.NewChildData((conn.DbConnection{}.GetConnection())).CreateChildInDb(child, idMother)
+		data.NewChildData(conn.DbConnection{}.GetConnection()).CreateChildInDb(child, idMother)
 		json.NewEncoder(w).Encode(child)
 	}
 }
@@ -78,7 +78,7 @@ func (s *Server) CreateMother() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var mother data.Mother
 		_ = json.NewDecoder(r.Body).Decode(&mother)
-		data.NewMotherData((conn.DbConnection{}.GetConnection())).CreateMotherInDb(mother)
+		data.NewMotherData(conn.DbConnection{}.GetConnection()).CreateMotherInDb(mother)
 		json.NewEncoder(w).Encode(mother)
 	}
 }
@@ -96,7 +96,7 @@ func (s *Server) UpdateChild() http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		data.NewChildData((conn.DbConnection{}.GetConnection())).UpdateChildFromDb(idMother, idChild, child)
+		data.NewChildData(conn.DbConnection{}.GetConnection()).UpdateChildFromDb(idMother, idChild, child)
 		json.NewEncoder(w).Encode(child)
 	}
 }
@@ -109,7 +109,7 @@ func (s *Server) UpdateMother() http.HandlerFunc {
 		}
 		var mother data.Mother
 		json.NewDecoder(r.Body).Decode(&mother)
-		data.NewMotherData((conn.DbConnection{}.GetConnection())).UpdateMotherFromDb(idMother, mother)
+		data.NewMotherData(conn.DbConnection{}.GetConnection()).UpdateMotherFromDb(idMother, mother)
 		json.NewEncoder(w).Encode(mother)
 	}
 }
@@ -121,7 +121,7 @@ func (s *Server) DeleteMother() http.HandlerFunc {
 		if err != nil {
 			log.Fatal(err)
 		}
-		data.NewMotherData((conn.DbConnection{}.GetConnection())).DeleteMotherFromDb(idMother)
+		data.NewMotherData(conn.DbConnection{}.GetConnection()).DeleteMotherFromDb(idMother)
 	}
 }
 
@@ -136,7 +136,7 @@ func (s *Server) DeleteChild() http.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		data.NewChildData((conn.DbConnection{}.GetConnection())).DeleteChildFromDb(idMother, idChild)
+		data.NewChildData(conn.DbConnection{}.GetConnection()).DeleteChildFromDb(idMother, idChild)
 	}
 }
 

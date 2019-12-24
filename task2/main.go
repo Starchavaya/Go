@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/alexandra/task2/internal/app"
+	"github.com/Starchavaya/Go/task2/internal/app"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"

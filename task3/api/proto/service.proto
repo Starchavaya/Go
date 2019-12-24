@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package task3;
+
+service IMother {
+    rpc ListMother (ListMotherRequest) returns (ListMotherResponse)
+}
+
+message Mother {
+    int64 id = 1;
+    string Firstname = 2;
+    string Lastname = 3;
+    string Patronymic = 4;
+}
+
+message ListMotherRequest {
+}
+
+message ListMotherResponse {
+    repeated Mother mothers = 1;
+}
+
+
