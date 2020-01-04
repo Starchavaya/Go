@@ -2,8 +2,14 @@ syntax = "proto3";
 
 package task3;
 
+import "google/api/annotations.proto";
+
 service IMother {
-    rpc ListMother (ListMotherRequest) returns (ListMotherResponse)
+    rpc ListMother (ListMotherRequest) returns (ListMotherResponse) {
+        option (google.api.http) = {
+                  get:"/mothers"
+        };
+    }
 }
 
 message Mother {
@@ -17,7 +23,7 @@ message ListMotherRequest {
 }
 
 message ListMotherResponse {
-    repeated Mother mothers = 1;
+    repeated Mother Mothers = 1;
 }
 
 
