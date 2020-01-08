@@ -2,28 +2,30 @@ package main
 
 import (
 	"context"
+	lib "github.com/Starchavaya/Go/task3/api/proto"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 	"net/http"
-	gw "github.com/Starchavaya/Go/task3/api/proto"
 )
 
-func Run(address string,opts ...runtime.ServeMuxOption)error  {
-	mux:=runtime.NewServeMux()
-	mux2:=http.NewServeMux()
-	dialOpts:=[]grpc.DialOption{grpc.WithInsecure()}
-	err:=gw.RegisterIMotherHandlerFromEndpoint(context.Background(),mux,"localhost:9091",dialOpts)
-	if err!=nil{
+func Run(address string, opts ...runtime.ServeMuxOption) error {
+	gw := runtime.NewServeMux()
+	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
+
+	err := lib.RegisterIMotherHandlerFromEndpoint(context.Background(), gw, "localhost:9091", dialOpts)
+	if err != nil {
 		return err;
 	}
-	mux2.Handle("/",mux)
-	return http.ListenAndServe(address,mux)
+
+	mux := http.NewServeMux()
+	mux.Handle("/", gw)
+	return http.ListenAndServe(address, gw)
 }
 
-func main()  {
+func main() {
 	defer glog.Flush()
-	if err:=Run(":8080");err!=nil{
+	if err := Run(":8080"); err != nil {
 		glog.Fatal(err)
 	}
 }

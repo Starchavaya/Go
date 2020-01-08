@@ -1,0 +1,69 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package task3;
+
+service IMother {
+    rpc ListMother (ListMotherRequest) returns (ListMotherResponse) {
+    }
+    rpc GetMother (MotherRequest) returns (MotherResponse) {
+    }
+    rpc GetMothersChilds (MotherRequest) returns (ListChildsResponse) {
+    }
+    rpc GetChildByMother (MotherAndChildRequest) returns (ChildResponse) {
+    }
+    rpc CreateMother (MotherRequest) returns (google.protobuf.Empty) {
+    }
+    rpc CreateChild (MotherAndChildRequest) returns (google.protobuf.Empty) {
+    }
+    rpc UpdateMother (MotherRequest) returns (google.protobuf.Empty) {
+    }
+    rpc UpdateChild (MotherAndChildRequest) returns (google.protobuf.Empty) {
+    }
+    rpc DeleteMother (MotherRequest) returns (google.protobuf.Empty) {
+    }
+    rpc DeleteChild (MotherAndChildRequest) returns (google.protobuf.Empty) {
+    }
+}
+
+message Mother {
+    int64 id = 1;
+    string Firstname = 2;
+    string Lastname = 3;
+    string Patronymic = 4;
+    repeated Child Childs = 5;
+}
+
+message Child {
+    int64 id = 1;
+    string Firstname = 2;
+    string Lastname = 3;
+    string Patronymic = 4;
+}
+
+message ListMotherRequest {
+}
+
+message ListMotherResponse {
+    repeated Mother mothers = 1;
+}
+
+message MotherRequest {
+    Mother mother = 1;
+}
+
+message MotherResponse {
+    Mother mother = 1;
+}
+
+message ListChildsResponse {
+    repeated Child childs = 1;
+}
+
+message MotherAndChildRequest {
+    Mother mother = 1;
+    Child child = 2;
+}
+
+message ChildResponse {
+    Child child = 1;
+}

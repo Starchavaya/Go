@@ -3,6 +3,7 @@ syntax = "proto3";
 package task3;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 service IMother {
     rpc ListMother (ListMotherRequest) returns (ListMotherResponse) {
@@ -10,9 +11,66 @@ service IMother {
                   get:"/mothers"
         };
     }
+    rpc GetMother (MotherRequest) returns (MotherResponse) {
+        option (google.api.http) = {
+			get: "/mothers/{mother.id}"
+		};
+    }
+    rpc GetMothersChilds(MotherRequest) returns (ListChildsResponse) {
+        option (google.api.http) = {
+			get: "/mothers/{mother.id}/childs"
+		};
+    }
+    rpc GetChildByMother(MotherAndChildRequest) returns (ChildResponse) {
+        option (google.api.http) = {
+			get: "/mothers/{mother.id}/childs/{child.id}"
+		};
+    }
+    rpc CreateMother (MotherRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			post: "/mothers"
+			body:"mother"
+		};
+    }
+    rpc CreateChild (MotherAndChildRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			post: "/mothers/{mother.id}"
+			body:"child"
+		};
+    }
+    rpc UpdateMother (MotherRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			put: "/mothers/{mother.id}"
+			body:"mother"
+		};
+    }
+    rpc UpdateChild(MotherAndChildRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			put: "/mothers/{mother.id}/childs/{child.id}"
+			body:"child"
+		};
+    }
+    rpc DeleteMother (MotherRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			delete: "/mothers/{mother.id}"
+		};
+    }
+    rpc DeleteChild (MotherAndChildRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			delete: "/mothers/{mother.id}/childs/{child.id}"
+		};
+    }
 }
 
 message Mother {
+    int64 id = 1;
+    string Firstname = 2;
+    string Lastname = 3;
+    string Patronymic = 4;
+    repeated Child Childs = 5;
+}
+
+message Child {
     int64 id = 1;
     string Firstname = 2;
     string Lastname = 3;
@@ -23,7 +81,26 @@ message ListMotherRequest {
 }
 
 message ListMotherResponse {
-    repeated Mother Mothers = 1;
+    repeated Mother mothers = 1;
 }
 
+message MotherRequest {
+    Mother mother =1;
+}
 
+message MotherResponse {
+    Mother mother =1;
+}
+
+message ListChildsResponse {
+    repeated Child childs = 1;
+}
+
+message MotherAndChildRequest {
+    Mother mother =1;
+    Child child = 2;
+}
+
+message ChildResponse {
+    Child child =1;
+}
