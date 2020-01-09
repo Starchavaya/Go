@@ -12,6 +12,34 @@ services:
       - "5432:5432"
     volumes:
       - ./dbcsripts:/docker-entrypoint-initdb.d
+  svc:
+    image: golang:latest
+    container_name: "svc"
+    working_dir: /go/src/app
+    command: go run api/cmd/svc-family/main.go
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./:/go/src/app
+    links:
+      - db
+    environment:
+      PORT: 8080
+
+  gw:
+    image: golang:latest
+    container_name: "gw"
+    working_dir: /go/src/app
+    command: go run api/cmd/gw-family/main.go
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/go/src/app
+    links:
+      - db
+      - svc
+    environment:
+      PORT: 8080
 
 volumes:
   postgres-data:

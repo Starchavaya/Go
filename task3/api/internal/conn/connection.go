@@ -11,7 +11,8 @@ type DbConnection struct {
 
 func (d DbConnection) GetConnection() *sql.DB {
 	if d.db == nil {
-		db, err := sql.Open("postgres", "host=localhost port=5432 dbname=mydb user=root password=root sslmode=disable")
+		//db, err := sql.Open("postgres", "host=localhost port=5432 dbname=mydb user=root password=root sslmode=disable")
+		db, err := sql.Open("postgres", "host=db port=5432 dbname=mydb user=root password=root sslmode=disable")
 		if err != nil {
 			panic(err)
 		}

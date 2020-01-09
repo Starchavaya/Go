@@ -13,7 +13,8 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 	gw := runtime.NewServeMux()
 	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
 
-	err := lib.RegisterIMotherHandlerFromEndpoint(context.Background(), gw, "localhost:9091", dialOpts)
+	//err := lib.RegisterIMotherHandlerFromEndpoint(context.Background(), gw, "localhost:9091", dialOpts)
+	err := lib.RegisterIMotherHandlerFromEndpoint(context.Background(), gw, "svc:9091", dialOpts)
 	if err != nil {
 		return err;
 	}
@@ -25,7 +26,8 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 
 func main() {
 	defer glog.Flush()
-	if err := Run(":8080"); err != nil {
+	//8080
+	if err := Run("gw:8080"); err != nil {
 		glog.Fatal(err)
 	}
 }
