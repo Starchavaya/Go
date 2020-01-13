@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	pb "github.com/Starchavaya/Go/task3/api/proto"
 	"github.com/golang/protobuf/ptypes/empty"
+	"log"
 
 	//"google.golang.org/grpc/channelz/service"
 )
@@ -17,69 +18,33 @@ func (s *server) DeleteMother(ctx context.Context, request *pb.MotherRequest) (*
 	m := request.GetMother()
 	s.d.Exec("delete from Mother where ID = $1", &m.Id)
 	return &empty.Empty{}, nil
-	//fetch('/mothers/4', { method: 'DELETE' }).then(result => console.log(result))
 }
 
 func (s *server) DeleteChild(ctx context.Context, request *pb.MotherAndChildRequest) (*empty.Empty, error) {
 	m := request.GetMother()
-	c:=request.GetChild()
+	c := request.GetChild()
 	s.d.Exec("delete from Child where ID = $1 and idMother=$2", &c.Id, &m.Id)
 	return &empty.Empty{}, nil
-	//fetch('/mothers/3/childs/4', { method: 'DELETE' }).then(result => console.log(result))
 }
 
 func (s *server) UpdateChild(ctx context.Context, request *pb.MotherAndChildRequest) (*empty.Empty, error) {
 	m := request.GetMother()
-	c:=request.GetChild()
+	c := request.GetChild()
 	s.d.Exec("update Child set Firstname = $1, Lastname=$2, Patronymic=$3 where ID = $4 and idMother=$5", &c.Firstname, &c.Lastname, &c.Patronymic, &c.Id, &m.Id)
 	return &empty.Empty{}, nil
-	/*
-	  fetch(
-	   '/mothers/2/childs/3',
-	   {
-	   method: 'PUT',
-	   headers: { 'Content-Type': 'application/json' },
-	   body: JSON.stringify({ "Firstname":"Миронова","Lastname":"Анна","Patronymic":"Мироновна"})
-	   }
-	   ).then(result => result.json().then(console.log))
-	 */
 }
 
 func (s *server) UpdateMother(ctx context.Context, request *pb.MotherRequest) (*empty.Empty, error) {
 	m := request.GetMother()
 	s.d.Exec("update Mother set Firstname = $1, Lastname=$2, Patronymic=$3 where ID = $4", &m.Firstname, &m.Lastname, &m.Patronymic, &m.Id)
 	return &empty.Empty{}, nil
-	/*
-	   fetch(
-	   '/mothers/1',
-	   {
-	   method: 'PUT',
-	   headers: { 'Content-Type': 'application/json'
-
-	   },
-	     body: JSON.stringify({ "Firstname":"Прохоренко","Lastname":"Анна","Patronymic":"Валерьевна"})
-	   }
-	   ).then(result =>
-
-	   result.json().then(console.log))
-	 */
 }
 
-func (s *server) CreateChild(ctx context.Context,request *pb.MotherAndChildRequest) (*empty.Empty, error) {
+func (s *server) CreateChild(ctx context.Context, request *pb.MotherAndChildRequest) (*empty.Empty, error) {
 	m := request.GetMother()
 	c := request.GetChild()
 	s.d.Exec("INSERT INTO Child(Firstname,Lastname,Patronymic,IDMother) values($1,$2,$3,$4)", &c.Firstname, &c.Lastname, &c.Patronymic, &m.Id)
 	return &empty.Empty{}, nil
-	/*
-	   fetch(
-	   '/mothers/1',
-	   {
-	   method: 'POST',
-	   headers: { 'Content-Type': 'application/json' },
-	   body: JSON.stringify({ "Firstname":"Миронова","Lastname":"Алеся","Patronymic":"Мироновна"})
-	   }
-	   ).then(result => result.json().then(console.log))
-	 */
 }
 
 func (s *server) CreateMother(ctx context.Context, request *pb.MotherRequest) (*empty.Empty, error) {
@@ -91,16 +56,6 @@ func (s *server) CreateMother(ctx context.Context, request *pb.MotherRequest) (*
 	for _, child := range m.Childs {
 		s.d.Exec("INSERT INTO Child(Firstname,Lastname,Patronymic,IDMother) values($1,$2,$3,$4) ", &child.Firstname, &child.Lastname, &child.Patronymic, &m.Id)
 	}
-	/*
-	    fetch(
-	   	   '/mothers',
-	   	   {
-	   	   method: 'POST',
-	   	   headers: { 'Content-Type': 'application/json' },
-	   	   body: JSON.stringify({ "Firstname":"Прохоренко","Lastname":"Алина","Patronymic":"Валерьевна","Childs":[{"Firstname":"Прохоренко","Lastname":"Василий","Patronymic":"Алексеевич"},{"Firstname":"Прохоренко","Lastname":"Петр","Patronymic":"Алексеевич"} ]})
-	   	   }
-	   	   ).then(result => result.json().then(console.log))
-	*/
 	return &empty.Empty{}, nil
 }
 
@@ -135,16 +90,15 @@ func (s *server) ListMother(ctx context.Context, request *pb.ListMotherRequest) 
 	rows, err := s.d.Query(
 		"SELECT Id,Firstname,Lastname,Patronymic FROM Mother")
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	mothers := []*pb.Mother{}
 	for rows.Next() {
 		mother := &pb.Mother{}
 		err := rows.Scan(&mother.Id, &mother.Firstname, &mother.Lastname, &mother.Patronymic)
 		if err != nil {
-			panic(err)
+			log.Println(err)
 		}
-		//mother :=
 		s.AddChild(mother)
 		mothers = append(mothers, mother)
 	}
@@ -159,13 +113,13 @@ func (s *server) AddChild(m *pb.Mother) *pb.Mother {
 	rows, err := s.d.Query(
 		"SELECT ID,Firstname,Lastname,Patronymic FROM Child where idMother = $1", m.Id)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	for rows.Next() {
 		child := &pb.Child{}
 		err := rows.Scan(&child.Id, &child.Firstname, &child.Lastname, &child.Patronymic)
 		if err != nil {
-			panic(err)
+			log.Println(err)
 		}
 		m.Childs = append(m.Childs, child)
 	}
